@@ -1,0 +1,4 @@
+@import/cumulative.args
+--invert
+^liabilities
+not:^liabilities:.*loan

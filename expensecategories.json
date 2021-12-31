@@ -1,0 +1,62 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "name": "ExpenseCategories",
+  "title": {
+    "text": "Expense breakdown",
+    "subtitle": "Amount per week ($)"
+  },
+  "data": { "url": "data/expensecategories.csv"},
+
+  "transform": [
+    { "calculate": "split(datum.account, ':', 2)", "as": "accountpair" },
+    { "calculate": "datum.value * 7", "as": "weekly" },
+    {
+      "window": [{"op": "mean", "field": "weekly", "as": "rolling_mean"}],
+      "groupby": ["accountpair"],
+      "frame": [-13, 0]
+    }
+  ],
+
+  "facet": {
+    "field": "accountpair.0",
+    "type": "ordinal",
+    "sort": { "op": "sum", "field": "rolling_mean", "order": "descending" },
+    "legend": { "title": null }
+  },
+
+  "columns": 2,
+  "resolve": { "scale": { "y": "independent", "color": "independent" } },
+
+  "params": [{
+    "name": "grid",
+    "select": "interval",
+    "bind": "scales"
+  }],
+
+  "spec": {
+    "width": 750,
+    "height": 190,
+
+    "mark": "line",
+    "encoding": {
+      "x": {
+        "field": "end_date",
+        "title": null,
+        "type": "temporal",
+        "scale": { "domainMin": { "year": 2020, "month": 12, "date": 1 } }
+      },
+      "y": {
+        "field": "rolling_mean",
+        "title": null,
+        "type": "quantitative",
+        "stack": true,
+        "scale": { "domain": [0, 1000] }
+      },
+      "color": {
+        "field": "accountpair.1",
+        "type": "nominal",
+        "legend": { "title": null }
+      }
+    }
+  }
+}

@@ -1,0 +1,75 @@
+#!/bin/sh
+
+umask 077
+
+dir=$(mktemp --tmpdir -d)
+trap "rm -r $dir" EXIT
+
+querydir=./reports
+outdir=./data
+
+# initialize a semaphore with a given number of tokens
+open_sem(){
+    mkfifo $dir/pipe-$$
+    exec 3<>$dir/pipe-$$
+    rm $dir/pipe-$$
+    local i=$1
+    for((;i>0;i--)); do
+        printf %s 000 >&3
+    done
+}
+
+# run the given command asynchronously and pop/push tokens
+run_with_lock(){
+    local x
+    # this read waits until there is something to read
+    read -u 3 -n 3 x && ((0==x)) || exit $x
+    (
+     ( "$@"; )
+    # push the return code of the command to the semaphore
+    printf '%.3d' $? >&3
+    )&
+}
+
+# Use 8 jobs
+N=4
+open_sem $N
+
+hledger_with_name() {
+    local namewithext="$(basename "$1")"
+    local name="${namewithext%.*}"
+    hledger balance --output-format=csv --layout=tidy @"$1" \
+      > "$dir/$name.csv"
+}
+
+for query in "$querydir"/*.args; do
+    run_with_lock hledger_with_name "$query"
+done
+
+wait
+
+make_report() {
+    local namewithext="$(basename "$1")"
+    local name="${namewithext%.*}"
+    local IFS=";"
+    local first=1
+    while read -a line; do
+        local csv="$dir/${line[0]}.csv"
+        local label="${line[1]}"
+        {
+          if [[ $first -eq 1 ]]; then
+              cat "$csv"
+          else
+              tail -n "+2" "$csv"
+          fi
+        } | sed -e "s/^\"...\"/\"$label\"/"
+        first=0
+    done < "$1" \
+         > "$outdir/$name.csv"
+}
+
+for report in "$querydir"/*.report; do
+    run_with_lock make_report "$report"
+done
+
+wait

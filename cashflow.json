@@ -1,0 +1,77 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "name": "Cashflow",
+  "title": {
+    "text": "Total Cashflow",
+    "subtitle": "Weekly revenue and expenses ($)"
+  },
+  "width": 1820,
+  "height": 600,
+  "data": { "url": "data/cashflow.csv"},
+
+  "transform": [
+    { "calculate": "datum.value * 7", "as": "weekly" },
+    {
+      "window": [{"op": "mean", "field": "weekly", "as": "rolling_mean"}],
+      "groupby": ["account"],
+      "frame": [-13, 0]
+    }
+  ],
+
+  "layer": [
+    {
+      "encoding": {
+        "x": {
+          "field": "end_date",
+          "title": null,
+          "type": "temporal"
+        },
+        "y": {
+          "field": "rolling_mean",
+          "title": null,
+          "type": "quantitative",
+          "aggregate": "sum"
+        },
+        "color": {
+          "field": "account",
+          "type": "nominal",
+          "legend": { "title": null, "orient": "bottom" }
+        }
+      },
+      "layer": [
+        {
+          "mark": "line",
+          "params": [{ "name": "grid", "select": "interval", "bind": "scales" }]
+        },{
+          "params": [{
+            "name": "label",
+            "select": { "type": "point", "encodings": ["x"], "nearest": true, "on": "mouseover" }
+          }],
+          "mark": "point",
+          "encoding": { "opacity": { "condition": { "param": "label", "empty": false, "value": 1 }, "value": 0 } }
+        }
+      ]
+    },{
+      "transform": [{"filter": {"param": "label", "empty": false}}],
+      "layer": [
+        {
+          "mark": {"type": "rule", "color": "gray"},
+          "encoding": {
+            "x": {"type": "temporal", "field": "end_date", "aggregate": "min"}
+          }
+        },{
+          "encoding": {
+            "text": {"type": "quantitative", "field": "rolling_mean", "format": ".2f"},
+            "x": {"type": "temporal", "field": "end_date"},
+            "y": {"type": "quantitative", "field": "rolling_mean"},
+            "color": {"type": "nominal", "field": "account"}
+          },
+          "layer": [
+            { "mark": {"type": "text", "align": "right", "dx": -5, "dy": -5, "strokeWidth": 2, "stroke": "white"} },
+            { "mark": {"type": "text", "align": "right", "dx": -5, "dy": -5} }
+          ]
+        }
+      ]
+    }
+  ]
+}

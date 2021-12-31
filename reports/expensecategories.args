@@ -1,0 +1,7 @@
+@import/change.args
+--alias=/^expenses:([^:]*)$/=expenses:\1:\1
+--alias=/^expenses$/=expenses:uncategorised:uncategorised
+--depth=3
+--drop=1
+^expenses
+not:^expenses:taxes
