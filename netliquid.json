@@ -57,7 +57,7 @@
           }
         },{
           "encoding": {
-            "text": {"type": "quantitative", "field": "thousands", "format": ".2f"},
+            "text": {"type": "quantitative", "field": "value", "format": "$0.3s"},
             "x": {"type": "temporal", "field": "end_date"},
             "y": {"type": "quantitative", "field": "thousands"},
             "color": {"type": "nominal", "field": "account"}

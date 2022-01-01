@@ -9,18 +9,18 @@
 
   "transform": [
     { "calculate": "split(datum.account, ':', 2)", "as": "accountpair" },
-    { "calculate": "datum.value * 7", "as": "weekly" },
     {
-      "window": [{"op": "mean", "field": "weekly", "as": "rolling_mean"}],
+      "window": [{"op": "mean", "field": "value", "as": "rolling_mean"}],
       "groupby": ["accountpair"],
       "frame": [-13, 0]
-    }
+    },
+    { "calculate": "datum.rolling_mean * 7", "as": "weekly" }
   ],
 
   "facet": {
     "field": "accountpair.0",
     "type": "ordinal",
-    "sort": { "op": "sum", "field": "rolling_mean", "order": "descending" },
+    "sort": { "op": "sum", "field": "weekly", "order": "descending" },
     "legend": { "title": null }
   },
 
@@ -46,7 +46,7 @@
         "scale": { "domainMin": { "expr": "timeOffset('year', now(), -1)" } }
       },
       "y": {
-        "field": "rolling_mean",
+        "field": "weekly",
         "title": null,
         "type": "quantitative",
         "stack": true,

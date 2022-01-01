@@ -10,12 +10,13 @@
   "data": { "url": "data/cashflow.csv"},
 
   "transform": [
-    { "calculate": "datum.value * 7", "as": "weekly" },
     {
-      "window": [{"op": "mean", "field": "weekly", "as": "rolling_mean"}],
+      "window": [{"op": "mean", "field": "value", "as": "rolling_mean"}],
       "groupby": ["account"],
       "frame": [-13, 0]
-    }
+    },
+    { "calculate": "datum.rolling_mean * 7", "as": "weekly" },
+    { "calculate": "datum.weekly / 1000", "as": "thousands" }
   ],
 
   "layer": [
@@ -28,7 +29,7 @@
           "scale": { "domainMin": { "expr": "timeOffset('year', now(), -1)" } }
         },
         "y": {
-          "field": "rolling_mean",
+          "field": "thousands",
           "title": null,
           "type": "quantitative",
           "aggregate": "sum"
@@ -62,9 +63,9 @@
           }
         },{
           "encoding": {
-            "text": {"type": "quantitative", "field": "rolling_mean", "format": ".2f"},
+            "text": {"type": "quantitative", "field": "weekly", "format": "$0.3s"},
             "x": {"type": "temporal", "field": "end_date"},
-            "y": {"type": "quantitative", "field": "rolling_mean"},
+            "y": {"type": "quantitative", "field": "thousands"},
             "color": {"type": "nominal", "field": "account"}
           },
           "layer": [
