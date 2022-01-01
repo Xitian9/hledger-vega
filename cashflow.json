@@ -24,7 +24,8 @@
         "x": {
           "field": "end_date",
           "title": null,
-          "type": "temporal"
+          "type": "temporal",
+          "scale": { "domainMin": { "expr": "timeOffset('year', now(), -1)" } }
         },
         "y": {
           "field": "rolling_mean",
