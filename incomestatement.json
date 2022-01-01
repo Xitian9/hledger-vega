@@ -1,13 +1,13 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "name": "Cashflow",
+  "name": "IncomeStatement",
   "title": {
-    "text": "Total Cashflow",
-    "subtitle": "Weekly revenue and expenses ($)"
+    "text": "Income statement",
+    "subtitle": "Weekly revenues and expenses, rolling average over a two-week window ($)"
   },
   "width": 1820,
   "height": 600,
-  "data": { "url": "data/cashflow.csv"},
+  "data": { "url": "data/incomestatement.csv"},
 
   "transform": [
     {
