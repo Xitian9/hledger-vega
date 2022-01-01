@@ -15,6 +15,8 @@ start.
 This requires a basic webserver running on your computer to execute the vega
 specifications.
 
+Note that this requires a version of hledger which supports the `--layout=tidy`
+option, which is currently only available in the master branch.
 Suggestions for how to make this more accessible and useful are very welcome.
 
 ## Basic workflow

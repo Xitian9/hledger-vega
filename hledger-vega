@@ -2,7 +2,7 @@
 
 umask 077
 
-dir=$(mktemp --tmpdir -d)
+dir="$(mktemp -d "${TMPDIR:-/tmp}/hledger-vega.XXXXXXXXXX")"
 trap "rm -r $dir" EXIT
 
 querydir=./reports
@@ -31,7 +31,10 @@ run_with_lock(){
     )&
 }
 
-# Use 8 jobs
+# Create the data directory if it doesn't exist
+mkdir -p "$outdir"
+
+# Use 4 jobs
 N=4
 open_sem $N
 
