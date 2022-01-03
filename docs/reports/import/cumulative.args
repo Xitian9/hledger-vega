@@ -1,0 +1,6 @@
+-f=bcexample.hledger
+--historical
+--value=end,USD
+--daily
+--no-total
+--depth=0

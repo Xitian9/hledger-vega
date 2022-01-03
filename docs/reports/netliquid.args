@@ -1,0 +1,7 @@
+@import/cumulative.args
+^assets
+not:^assets:.*prepaids
+not:^assets:.*bonds
+not:^assets:.*super
+^liabilities
+not:^liabilities:.*loan

@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Hledger-vega bcexample.journal</title>
+    <meta charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.21.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.2"></script>
+  </head>
+  <body>
+    <div id="vis1"></div>
+    <div id="vis2"></div>
+    <div id="vis3"></div>
+    <div id="vis4"></div>
+    <div id="vis5"></div>
+
+    <script type="text/javascript">
+      vegaEmbed('#vis1', "incomestatement.json");
+      vegaEmbed('#vis2', "netliquid.json");
+      vegaEmbed('#vis3', "netposition.json");
+      vegaEmbed('#vis4', "wealth.json");
+      vegaEmbed('#vis5', "expensecategories.json");
+    </script>
+  </body>
+</html>

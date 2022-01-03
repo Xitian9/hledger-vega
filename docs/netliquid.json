@@ -1,0 +1,73 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "name": "NetLiquid",
+  "title": {
+    "text": "Liquid assets",
+    "subtitle": "Liquid assets, net liquid assets, and short-term liabilities (thousand $)"
+  },
+  "width": 1820,
+  "height": 600,
+  "data": { "url": "data/netliquid.csv"},
+
+  "transform": [
+    { "calculate": "datum.value / 1000", "as": "thousands" }
+  ],
+
+  "layer": [
+    {
+      "encoding": {
+        "x": {
+          "field": "end_date",
+          "title": null,
+          "type": "temporal",
+          "scale": { "domainMin": { "year": 2013, "month": 10, "date": 12 } }
+        },
+        "y": {
+          "field": "thousands",
+          "title": null,
+          "type": "quantitative",
+          "aggregate": "sum"
+        },
+        "color": {
+          "field": "account",
+          "type": "nominal",
+          "legend": { "title": null, "orient": "bottom" }
+        }
+      },
+      "layer": [
+        {
+          "mark": "line",
+          "params": [{ "name": "grid", "select": "interval", "bind": "scales" }]
+        },{
+          "params": [{
+            "name": "label",
+            "select": { "type": "point", "encodings": ["x"], "nearest": true, "on": "mouseover" }
+          }],
+          "mark": "point",
+          "encoding": { "opacity": { "condition": { "param": "label", "empty": false, "value": 1 }, "value": 0 } }
+        }
+      ]
+    },{
+      "transform": [{"filter": {"param": "label", "empty": false}}],
+      "layer": [
+        {
+          "mark": {"type": "rule", "color": "gray"},
+          "encoding": {
+            "x": {"type": "temporal", "field": "end_date", "aggregate": "min"}
+          }
+        },{
+          "encoding": {
+            "text": {"type": "quantitative", "field": "value", "format": "$0.3s"},
+            "x": {"type": "temporal", "field": "end_date"},
+            "y": {"type": "quantitative", "field": "thousands"},
+            "color": {"type": "nominal", "field": "account"}
+          },
+          "layer": [
+            { "mark": {"type": "text", "align": "right", "dx": -5, "dy": -5, "strokeWidth": 2, "stroke": "white"} },
+            { "mark": {"type": "text", "align": "right", "dx": -5, "dy": -5} }
+          ]
+        }
+      ]
+    }
+  ]
+}
