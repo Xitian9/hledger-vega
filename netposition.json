@@ -5,8 +5,8 @@
     "text": "Net position",
     "subtitle": "Net position (thousand $)"
   },
-  "width": 1820,
-  "height": 600,
+  "width": "container",
+  "height": "container",
   "data": { "url": "data/netposition.csv"},
 
   "transform": [
@@ -58,9 +58,9 @@
           }
         },{
           "encoding": {
-            "text": {"type": "quantitative", "field": "value", "format": "$0.3s"},
+            "text": {"type": "quantitative", "field": "value", "aggregate": "sum", "format": "$0.3s"},
             "x": {"type": "temporal", "field": "end_date"},
-            "y": {"type": "quantitative", "field": "thousands"},
+            "y": {"type": "quantitative", "field": "thousands", "aggregate": "sum"},
             "color": {"type": "nominal", "field": "account"}
           },
           "layer": [

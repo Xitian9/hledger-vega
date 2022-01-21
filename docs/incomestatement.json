@@ -5,8 +5,8 @@
     "text": "Income statement",
     "subtitle": "Weekly revenues and expenses, rolling average over a 31-day window ($)"
   },
-  "width": 1820,
-  "height": 600,
+  "width": "container",
+  "height": "container",
   "data": { "url": "data/incomestatement.csv"},
 
   "transform": [
@@ -62,7 +62,7 @@
           }
         },{
           "encoding": {
-            "text": {"type": "quantitative", "field": "weekly", "format": "$0.3s"},
+            "text": {"type": "quantitative", "field": "weekly", "aggregate": "sum", "format": "$0.3s"},
             "x": {"type": "temporal", "field": "end_date"},
             "y": {"type": "quantitative", "field": "weekly", "aggregate": "sum"},
             "color": {"type": "nominal", "field": "account"}

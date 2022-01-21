@@ -49,8 +49,7 @@
         "field": "weekly",
         "title": null,
         "type": "quantitative",
-        "stack": true,
-        "scale": { "domain": [0, 1000] }
+        "stack": true
       },
       "color": {
         "field": "accountpair.1",

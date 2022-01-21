@@ -3,10 +3,10 @@
   "name": "Wealth",
   "title": {
     "text": "Total wealth",
-    "subtitle": "Total assets liabilities (thousand $)"
+    "subtitle": "Total assets and liabilities (thousand $)"
   },
-  "width": 1820,
-  "height": 600,
+  "width": "container",
+  "height": "container",
   "data": { "url": "data/wealth.csv"},
 
   "transform": [
