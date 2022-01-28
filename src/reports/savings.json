@@ -1,0 +1,97 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "name": "SavingsGoals",
+  "title": {
+    "text": "Savings goals",
+    "subtitle": "Percentage of revenues put into savings, averaged over the last half year"
+  },
+  "width": "container",
+  "height": "container",
+  "data": { "url": "../data/savings.csv"},
+
+  "transform": [
+    {
+      "window": [{"op": "sum", "field": "value", "as": "rolling_sum"}],
+      "groupby": ["account"],
+      "frame": [-181, 0]
+    },
+    {
+      "window": [{"op": "count", "as": "window_size"}],
+      "groupby": ["account"],
+      "frame": [-181, 0]
+    },
+    { "filter": "datum.window_size >= 90" },
+    { "pivot": "account", "groupby": ["end_date"], "value": "rolling_sum" },
+    {
+      "calculate": "datum.revenuesuper != 0 ? (datum.revenuesuper - datum.expenses) / datum.revenuesuper : 0",
+      "as": "Including superannuation"
+    },
+    {
+      "calculate": "datum.revenue != 0 ? (datum.revenue - datum.expenses) / datum.revenue : 0",
+      "as": "Savings"
+    },
+    {
+      "calculate": "datum.revenue != 0 ? (datum.revenue - datum.repayments) / datum.revenue : 0",
+      "as": "Liquid savings"
+    },
+    {"fold": ["Savings", "Liquid savings", "Including superannuation"], "as": ["account", "value"]},
+    {"calculate": "datum.value * 100", "as": "percentage"}
+  ],
+
+  "layer": [
+    {
+      "encoding": {
+        "x": {
+          "field": "end_date",
+          "title": null,
+          "type": "temporal",
+          "scale": { "domainMin": { "expr": "timeOffset('year', now(), -1)" } }
+        },
+        "y": {
+          "field": "percentage",
+          "title": null,
+          "type": "quantitative"
+        },
+        "color": {
+          "field": "account",
+          "type": "nominal",
+          "legend": { "title": null, "orient": "bottom" }
+        }
+      },
+      "layer": [
+        {
+          "mark": "line",
+          "params": [{ "name": "grid", "select": "interval", "bind": "scales" }]
+        },{
+          "params": [{
+            "name": "label",
+            "select": { "type": "point", "encodings": ["x"], "nearest": true, "on": "mouseover" }
+          }],
+          "mark": "point",
+          "encoding": { "opacity": { "condition": { "param": "label", "empty": false, "value": 1 }, "value": 0 } }
+        }
+      ]
+    },{
+      "transform": [{"filter": {"param": "label", "empty": false}}],
+      "layer": [
+        {
+          "mark": {"type": "rule", "color": "gray"},
+          "encoding": {
+            "x": {"type": "temporal", "field": "end_date", "aggregate": "min"}
+          }
+        },{
+          "encoding": {
+            "text": {"type": "quantitative", "field": "value", "aggregate": "sum", "format": "0.1%"},
+            "x": {"type": "temporal", "field": "end_date"},
+            "y": {"type": "quantitative", "field": "percentage", "aggregate": "sum"},
+            "color": {"type": "nominal", "field": "account"}
+          },
+          "layer": [
+            { "mark": {"type": "text", "align": "right", "dx": -5, "dy": -5, "strokeWidth": 2, "stroke": "white"} },
+            { "mark": {"type": "text", "align": "right", "dx": -5, "dy": -5} }
+          ]
+        }
+      ]
+    }
+  ]
+}

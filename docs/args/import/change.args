@@ -2,6 +2,5 @@
 --infer-market-price
 --value=then,USD
 --cost
---daily
 --depth=0
 --begin=2012-01-03

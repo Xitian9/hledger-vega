@@ -42,7 +42,7 @@ open_sem $N
 hledger_with_name() {
     local namewithext="$(basename "$1")"
     local name="${namewithext%.*}"
-    hledger balance --output-format=csv --layout=tidy @"$1" \
+    hledger balance --output-format=csv --layout=tidy --daily @"$1" \
       > "$dir/$name.csv"
 }
 

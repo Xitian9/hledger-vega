@@ -2,5 +2,4 @@
 --infer-market-price
 --historical
 --value=end,USD
---daily
 --depth=0
