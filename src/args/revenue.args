@@ -1,4 +1,4 @@
 @import/change.args
 --invert
-^revenues
+^(revenue|income)
 not::retirement
