@@ -5,7 +5,7 @@
     "text": "Expense breakdown",
     "subtitle": "Amount per week ($)"
   },
-  "data": { "url": "../data/expensecategories.csv"},
+  "data": { "url": "https://xitian9.github.io/hledger-vega/data/expensecategories.csv"},
 
   "transform": [
     { "calculate": "split(datum.account, ':', 2)", "as": "accountpair" },

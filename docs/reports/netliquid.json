@@ -7,7 +7,7 @@
   },
   "width": "container",
   "height": "container",
-  "data": { "url": "../data/netliquid.csv"},
+  "data": { "url": "https://xitian9.github.io/hledger-vega/data/netliquid.csv"},
 
   "transform": [
     { "calculate": "datum.value / 1000", "as": "thousands" }

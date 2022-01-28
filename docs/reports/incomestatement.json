@@ -7,7 +7,7 @@
   },
   "width": "container",
   "height": "container",
-  "data": { "url": "../data/incomestatement.csv"},
+  "data": { "url": "https://xitian9.github.io/hledger-vega/data/incomestatement.csv"},
 
   "transform": [
     {

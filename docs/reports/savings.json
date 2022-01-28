@@ -7,7 +7,7 @@
   },
   "width": "container",
   "height": "container",
-  "data": { "url": "../data/savings.csv"},
+  "data": { "url": "https://xitian9.github.io/hledger-vega/data/savings.csv"},
 
   "transform": [
     {
