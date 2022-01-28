@@ -6,18 +6,21 @@
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.2"></script>
     <style>
-      .fullchart { float: left; width: 50%; height: 50%; }
+      .halfchart { float: left; width: 50%;  height: 50%; }
+      .fullchart { float: left; width: 100%; height: 50%; }
     </style>
   </head>
   <body>
-    <div class="fullchart" id="vis1"></div>
-    <div class="fullchart" id="vis2"></div>
-    <div class="fullchart" id="vis3"></div>
+    <div class="halfchart" id="vis0"></div>
+    <div class="halfchart" id="vis1"></div>
+    <div class="halfchart" id="vis2"></div>
+    <div class="halfchart" id="vis3"></div>
     <div class="fullchart" id="vis4"></div>
     <div id="vis5"></div>
 
     <script type="text/javascript">
-      vegaEmbed('#vis1', "incomestatement.json");
+      vegaEmbed('#vis0', "incomestatement.json");
+      vegaEmbed('#vis1', "savings.json");
       vegaEmbed('#vis2', "netliquid.json");
       vegaEmbed('#vis3', "netposition.json");
       vegaEmbed('#vis4', "wealth.json");
