@@ -44,6 +44,9 @@ hledger_with_name() {
     local name="${namewithext%.*}"
     hledger balance --output-format=csv --layout=tidy --daily @"$1" \
       > "$dir/$name.csv"
+    if [[ $(wc -l < "$dir/$name.csv") -le 1 ]]; then
+      >&2 echo "Warning: hledger produced no output from \"$1\""
+    fi
 }
 
 for query in "$querydir"/*.args; do
