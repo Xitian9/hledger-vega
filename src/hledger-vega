@@ -49,12 +49,6 @@ hledger_with_name() {
     fi
 }
 
-for query in "$querydir"/*.args; do
-    run_with_lock hledger_with_name "$query"
-done
-
-wait
-
 make_report() {
     local namewithext="$(basename "$1")"
     local name="${namewithext%.*}"
@@ -74,6 +68,12 @@ make_report() {
     done < "$1" \
          > "$outdir/$name.csv"
 }
+
+for query in "$querydir"/*.args; do
+    run_with_lock hledger_with_name "$query"
+done
+
+wait
 
 for report in "$reportdir"/*.report; do
     run_with_lock make_report "$report"
