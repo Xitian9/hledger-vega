@@ -7,7 +7,7 @@
   },
   "width": "container",
   "height": "container",
-  "data": { "url": "data/netposition.csv"},
+  "data": { "url": "../data/netposition.csv"},
 
   "transform": [
     { "calculate": "datum.value / 1000", "as": "thousands" }
@@ -20,7 +20,7 @@
           "field": "end_date",
           "title": null,
           "type": "temporal",
-          "scale": { "domainMin": { "expr": "timeOffset('year', now(), -1)" } }
+          "scale": { "domainMin": { "year": 2013, "month": 10, "date": 12 } }
         },
         "y": {
           "field": "thousands",

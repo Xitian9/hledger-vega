@@ -36,6 +36,25 @@ The arg files are usual [hledger arg files](https://hledger.org/hledger.html#com
 
 ## Getting started
 
+Everything you need to create a suite of charts for your own data can be found
+[here](src).
+
+It includes:
+- A [collection of arg files](src/args) to specify the hledger calls needed.
+- A [collection of report files](src/reports) telling tow to combine the hledger data into csv files
+- The [hledger-vega bash script](src/hledger-vega), which will the generate csv files.
+- A [collection of vega-lite specifications](src/reports), which specify how to generate the charts from the csv files.
+- A basic [html file](src/index.html), which embeds the charts in a webpage for viewing.
+
+To get started, clone the directory and run `hledger-vega` to generate your data.
+Next start up web server in the `src` directory, and then point your web
+browser to the served html file.
+There are many static web servers you can use for these purposes.
+If you have access to python, you can run `python3 -m http.server` to create a simple one.
+
+
+## Making your own charts
+
 Let's go through a quick example of how to generate a basic chart.
 Suppose we'd like to chart our income statement: a measure of how much we're
 earning and spending over a given period.
@@ -52,7 +71,7 @@ This will make sure costs are accumulated daily, boiled down to a single number
 each day, converted to cost, and then valued in USD (or your own local
 currency).
 It's not strictly necessary to separate these out, but let's do it to save some work.
-We will put these options into `reports/change.args`.
+We will put these options into `args/change.args`.
 ```
 --value=then,USD
 --cost
@@ -64,7 +83,7 @@ Next, let's create the query for our expenses.
 I do not want my taxes included as an expense, so I'll leave them out.
 `hledger bal --daily --depth=0 --cost --value=then,USD "^expenses" not:"^expenses:.*taxes"`
 First we import the `change.args` file we just created to get the common
-options, then include the rest of the query in `reports/expenses.args`.
+options, then include the rest of the query in `args/expenses.args`.
 ```
 @change.args
 ^expenses
@@ -76,7 +95,7 @@ I only want to include post-tax income, and furthermore do not want any
 retirement income included.
 We also should use `--invert`, since revenues are negative in hledger.
 `hledger bal --daily --depth=0 --cost --value=then,USD --invert "^income" "^expenses:.*taxes" not:"retirement"`
-Let's put that into `reports/income.args`.
+Let's put that into `args/income.args`.
 ```
 @change.args
 --invert
@@ -107,16 +126,17 @@ You will need to run this whenever you want to update the data your chart uses.
 ### Chart the csv files
 
 All that's left is to create the vega-lite specification to display this chart,
-located at [incomestatement.json](incomestatement.json).
+located at [incomestatement.json](src/reports/incomestatement.json).
 Notice that it uses the `incomestatment.csv` file we generated earlier:
 `"data": { "url": "data/incomestatement.csv"}`.
 
 We can now use vega-embed to embed this in our html file
-[index.html](index.html).
-The line `vegaEmbed('#vis1', "incomestatement.json");` says to embed the chart
+[index.html](src/index.html).
+The line `vegaEmbed('#vis1', "reports/incomestatement.json");` says to embed the chart
 specified by `incomestatement.json` in the element with id `vis1`.
 
 Fire up your webserver in a place that can see these files, and they should be visible!
+
 
 ## Further customisation
 

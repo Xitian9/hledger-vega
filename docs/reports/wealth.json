@@ -1,27 +1,16 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "name": "IncomeStatement",
+  "name": "Wealth",
   "title": {
-    "text": "Income statement",
-    "subtitle": "Weekly revenues and expenses, rolling average over a 28-day window ($)"
+    "text": "Total wealth",
+    "subtitle": "Total assets and liabilities (thousand $)"
   },
   "width": "container",
   "height": "container",
-  "data": { "url": "data/incomestatement.csv"},
+  "data": { "url": "../data/wealth.csv"},
 
   "transform": [
-    {
-      "window": [{"op": "mean", "field": "value", "as": "rolling_mean"}],
-      "groupby": ["account"],
-      "frame": [-27, 0]
-    },
-    {
-      "window": [{"op": "count", "as": "window_size"}],
-      "groupby": ["account"],
-      "frame": [-27, 0]
-    },
-    { "filter": "datum.window_size >= 14" },
-    { "calculate": "datum.rolling_mean * 7", "as": "weekly" }
+    { "calculate": "datum.value / 1000", "as": "thousands" }
   ],
 
   "layer": [
@@ -34,10 +23,11 @@
           "scale": { "domainMin": { "year": 2013, "month": 10, "date": 12 } }
         },
         "y": {
-          "field": "weekly",
+          "field": "thousands",
           "title": null,
           "type": "quantitative",
-          "aggregate": "sum"
+          "aggregate": "sum",
+          "scale": { "zero": false }
         },
         "color": {
           "field": "account",
@@ -68,9 +58,9 @@
           }
         },{
           "encoding": {
-            "text": {"type": "quantitative", "field": "weekly", "aggregate": "sum", "format": "$0.3s"},
+            "text": {"type": "quantitative", "field": "value", "aggregate": "sum", "format": "$0.3s"},
             "x": {"type": "temporal", "field": "end_date"},
-            "y": {"type": "quantitative", "field": "weekly", "aggregate": "sum"},
+            "y": {"type": "quantitative", "field": "thousands", "aggregate": "sum"},
             "color": {"type": "nominal", "field": "account"}
           },
           "layer": [

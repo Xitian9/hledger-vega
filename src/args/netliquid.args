@@ -2,4 +2,6 @@
 ^assets
 not:^assets:.*prepaids
 not:^assets:.*bonds
-not:^assets:.*super
+not:^assets:.*retirement
+^liabilities
+not:^liabilities:.*loan

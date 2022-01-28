@@ -4,4 +4,3 @@
 --depth=3
 --drop=1
 ^expenses
-not:^expenses:taxes

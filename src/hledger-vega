@@ -5,7 +5,8 @@ umask 077
 dir="$(mktemp -d "${TMPDIR:-/tmp}/hledger-vega.XXXXXXXXXX")"
 trap "rm -r $dir" EXIT
 
-querydir=./reports
+querydir=./args
+reportdir=./reports
 outdir=./data
 
 # initialize a semaphore with a given number of tokens
@@ -71,7 +72,7 @@ make_report() {
          > "$outdir/$name.csv"
 }
 
-for report in "$querydir"/*.report; do
+for report in "$reportdir"/*.report; do
     run_with_lock make_report "$report"
 done
 

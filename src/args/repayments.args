@@ -1,5 +1,3 @@
 @import/change.args
 --alias=/^liabilities:(.*:loan.*)/=expenses:\1
 ^expenses
-not:^expenses:taxes
-not:^expenses:.*loan:.*payable

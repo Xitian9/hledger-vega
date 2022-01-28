@@ -1,3 +1,0 @@
-@import/cumulative.args
-^assets:.*super
-not:transfer

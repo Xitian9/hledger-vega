@@ -1,5 +1,4 @@
 @import/change.args
 --invert
 ^revenues
-not::super
-not::taxes
+not::retirement
