@@ -2,6 +2,6 @@
 ^assets
 not:^assets:.*prepaids
 not:^assets:.*bonds
-not:^assets:.*super
+not:^assets:US:Vanguard
 ^liabilities
 not:^liabilities:.*loan

@@ -1,4 +1,5 @@
--f=bcexample.hledger
+-f=vegaexample.journal
+--infer-market-price
 --value=then,USD
 --cost
 --daily

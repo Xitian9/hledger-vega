@@ -1,4 +1,5 @@
 @import/change.args
 --invert
-^revenues
+^income
 not::taxes
+^expenses:taxes

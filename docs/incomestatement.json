@@ -3,7 +3,7 @@
   "name": "IncomeStatement",
   "title": {
     "text": "Income statement",
-    "subtitle": "Weekly revenues and expenses, rolling average over a 31-day window ($)"
+    "subtitle": "Weekly revenues and expenses, rolling average over a 28-day window ($)"
   },
   "width": "container",
   "height": "container",
@@ -13,14 +13,14 @@
     {
       "window": [{"op": "mean", "field": "value", "as": "rolling_mean"}],
       "groupby": ["account"],
-      "frame": [-31, 0]
+      "frame": [-27, 0]
     },
     {
       "window": [{"op": "count", "as": "window_size"}],
       "groupby": ["account"],
-      "frame": [-31, 0]
+      "frame": [-27, 0]
     },
-    { "filter": "datum.window_size >= 31" },
+    { "filter": "datum.window_size >= 14" },
     { "calculate": "datum.rolling_mean * 7", "as": "weekly" }
   ],
 

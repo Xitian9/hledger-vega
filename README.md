@@ -1,6 +1,8 @@
 # hledger-vega
 
 Chart your hledger data with interactive graphs.
+A reasonably comprehensive example of what can be done can be seen
+[here](https://xitian9.github.io/hledger-vega/vegaexample.html).
 
 I've tried many different approaches to generating graphs, from vanilla gnuplot
 to postprocessing in R with ggplot2.

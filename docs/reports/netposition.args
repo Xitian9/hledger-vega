@@ -1,4 +1,4 @@
 @import/cumulative.args
 ^assets
-not:^assets:.*super
+not:^assets:US:Vanguard
 ^liabilities

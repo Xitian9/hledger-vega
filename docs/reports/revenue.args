@@ -1,5 +1,5 @@
 @import/change.args
 --invert
 ^income
-not::super
-not::taxes
+not::Match401K
+^expenses:taxes
