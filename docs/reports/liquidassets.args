@@ -3,3 +3,4 @@
 not:^assets:.*prepaids
 not:^assets:.*bonds
 not:^assets:US:Vanguard
+not:^assets:US:Property
