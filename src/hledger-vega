@@ -5,7 +5,7 @@ umask 077
 dir="$(mktemp -d "${TMPDIR:-/tmp}/hledger-vega.XXXXXXXXXX")"
 trap "rm -r $dir" EXIT
 
-querydir=./args
+argsdir=./args
 reportdir=./reports
 outdir=./data
 
@@ -69,7 +69,7 @@ make_report() {
          > "$outdir/$name.csv"
 }
 
-for query in "$querydir"/*.args; do
+for query in "$argsdir"/*.args; do
     run_with_lock hledger_with_name "$query"
 done
 
