@@ -1,0 +1,4 @@
+@import/change.args
+--invert
+^(revenue|income)
+not::taxes
