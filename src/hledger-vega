@@ -7,17 +7,19 @@ trap "rm -r $dir" EXIT
 
 datasetsdir=./datasets
 chartsdir=./charts
+numjobs=8
 
 usage(){
-    echo >&2 "Usage: $0 [-v] [-d DATASETSDIR] [-c CHARTSDIR]"
+    echo >&2 "Usage: $0 [-v] [-n NUMJOBS] [-d DATASETSDIR] [-c CHARTSDIR]"
     exit 1
 }
 
-while getopts "vd:c:h" opt; do
+while getopts "vd:c:n:h" opt; do
     case "$opt" in
         v) verbose=1 ;;
         d) datasetsdir="$OPTARG" ;;
         c) chartsdir="$OPTARG" ;;
+        n) numjobs="$OPTARG" ;;
         *) usage ;;
     esac
 done
@@ -56,9 +58,7 @@ run_with_lock(){
 # Create the data directory if it doesn't exist
 mkdir -p "$chartsdir"
 
-# Use 4 jobs
-N=4
-open_sem $N
+open_sem "$numjobs"
 
 hledger_with_name() {
     local namewithext="$(basename "$1")"
