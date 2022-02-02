@@ -5,8 +5,30 @@ umask 077
 dir="$(mktemp -d "${TMPDIR:-/tmp}/hledger-vega.XXXXXXXXXX")"
 trap "rm -r $dir" EXIT
 
-datasetdir=./datasets
+datasetsdir=./datasets
 chartsdir=./charts
+
+usage(){
+    echo >&2 "Usage: $0 [-v] [-d DATASETSDIR] [-c CHARTSDIR]"
+    exit 1
+}
+
+while getopts "vd:c:h" opt; do
+    case "$opt" in
+        v) verbose=1 ;;
+        d) datasetsdir="$OPTARG" ;;
+        c) chartsdir="$OPTARG" ;;
+        *) usage ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+
+log(){
+    if [[ "${verbose:-0}" -eq 1 ]]; then
+        echo >&2 $*   # stderr to fit with make_chart_data
+    fi
+}
 
 # initialize a semaphore with a given number of tokens
 open_sem(){
@@ -41,21 +63,23 @@ open_sem $N
 hledger_with_name() {
     local namewithext="$(basename "$1")"
     local name="${namewithext%.*}"
-    hledger balance --output-format=csv --layout=tidy --daily @"$1" \
-      > "$dir/$name.csv"
+    log "hledger balance --output-format=csv --layout=tidy --daily @"$1""
+    hledger balance --output-format=csv --layout=tidy --daily @"$1" > "$dir/$name.csv"
     if [[ $(wc -l < "$dir/$name.csv") -le 1 ]]; then
-      >&2 echo "Warning: hledger produced no output from \"$1\""
+      log "Warning: hledger produced no output from \"$1\""
     fi
 }
 
-make_report() {
+make_chart_data() {
     local namewithext="$(basename "$1")"
     local name="${namewithext%.*}"
     local IFS=";"
     local first=1
+    log "$outdir/$name.csv:"
     while read -a line; do
         local csv="$dir/${line[0]}.csv"
         local label="${line[1]}"
+        log "    $(basename "$csv")"
         {
           if [[ $first -eq 1 ]]; then
               cat "$csv"
@@ -68,14 +92,16 @@ make_report() {
          > "$chartsdir/$name.csv"
 }
 
-for query in "$datasetdir"/*.args; do
+log "Generating hledger data sets (in $dir):"
+for query in "$datasetsdir"/*.args; do
     run_with_lock hledger_with_name "$query"
 done
 
 wait
 
-for report in "$chartsdir"/*.report; do
-    run_with_lock make_report "$report"
+log "Combining data sets into chart data (in $chartsdir):"
+for chart in "$chartsdir"/*.report; do
+    run_with_lock make_chart_data "$chart"
 done
 
 wait
