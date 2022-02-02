@@ -51,10 +51,22 @@ Next start up web server in the `src` directory, and then point your web
 browser to the served html file.
 There are many static web servers you can use for these purposes.
 If you have access to python, you can run `python3 -m http.server` to create a simple one.
+You can run this with `make serve`, and then visit
+[127.0.0.1:8000](http://127.0.0.1:8000) in your web browser.
 
-Note that the provided args files assume that your statement of accounts uses
-the standard top-level names assets, liabilities, expenses, and revenue(s)/income.
-If you use a different naming system you should alter the args files to suit your system.
+### Caveats
+
+Note that the provided args files assume that your chart of accounts uses the
+standard top-level names assets, liabilities, expenses, and revenue(s)/income.
+If you use a different naming system you should alter the args files to suit
+your system.
+
+The income statement chart will filter out the first 14 days by default, to
+avoid huge spikes due to the moving average, and the savings chart will filter
+out the first 90 days.
+This can cause the charts to appear blank if you have fewer days than that.
+To change this, modify the `datum.window_size >=` line in the appropriate
+`.json` file.
 
 
 ## Making your own charts
