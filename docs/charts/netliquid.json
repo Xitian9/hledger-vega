@@ -1,13 +1,13 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "name": "Wealth",
+  "name": "NetLiquid",
   "title": {
-    "text": "Total wealth",
-    "subtitle": "Total assets and liabilities (thousand $)"
+    "text": "Liquid assets",
+    "subtitle": "Liquid assets, net liquid assets, and short-term liabilities (thousand $)"
   },
   "width": "container",
   "height": "container",
-  "data": { "url": "https://xitian9.github.io/hledger-vega/data/wealth.csv"},
+  "data": { "url": "https://xitian9.github.io/hledger-vega/charts/netliquid.csv"},
 
   "transform": [
     { "calculate": "datum.value / 1000", "as": "thousands" }
@@ -26,8 +26,7 @@
           "field": "thousands",
           "title": null,
           "type": "quantitative",
-          "aggregate": "sum",
-          "scale": { "zero": false }
+          "aggregate": "sum"
         },
         "color": {
           "field": "account",

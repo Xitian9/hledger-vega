@@ -3,20 +3,25 @@
   "name": "IncomeStatement",
   "title": {
     "text": "Income statement",
-    "subtitle": "Weekly revenues and expenses, rolling average over a two-week window ($)"
+    "subtitle": "Weekly revenues and expenses, rolling average over a 28-day window ($)"
   },
   "width": "container",
   "height": "container",
-  "data": { "url": "../data/incomestatement.csv"},
+  "data": { "url": "https://xitian9.github.io/hledger-vega/charts/incomestatement.csv"},
 
   "transform": [
     {
       "window": [{"op": "mean", "field": "value", "as": "rolling_mean"}],
       "groupby": ["account"],
-      "frame": [-13, 0]
+      "frame": [-27, 0]
     },
-    { "calculate": "datum.rolling_mean * 7", "as": "weekly" },
-    { "calculate": "datum.weekly / 1000", "as": "thousands" }
+    {
+      "window": [{"op": "count", "as": "window_size"}],
+      "groupby": ["account"],
+      "frame": [-27, 0]
+    },
+    { "filter": "datum.window_size >= 14" },
+    { "calculate": "datum.rolling_mean * 7", "as": "weekly" }
   ],
 
   "layer": [
@@ -26,10 +31,10 @@
           "field": "end_date",
           "title": null,
           "type": "temporal",
-          "scale": { "domainMin": { "expr": "timeOffset('year', now(), -1)" } }
+          "scale": { "domainMin": { "year": 2013, "month": 10, "date": 12 } }
         },
         "y": {
-          "field": "thousands",
+          "field": "weekly",
           "title": null,
           "type": "quantitative",
           "aggregate": "sum"
@@ -65,7 +70,7 @@
           "encoding": {
             "text": {"type": "quantitative", "field": "weekly", "aggregate": "sum", "format": "$0.3s"},
             "x": {"type": "temporal", "field": "end_date"},
-            "y": {"type": "quantitative", "field": "thousands", "aggregate": "sum"},
+            "y": {"type": "quantitative", "field": "weekly", "aggregate": "sum"},
             "color": {"type": "nominal", "field": "account"}
           },
           "layer": [

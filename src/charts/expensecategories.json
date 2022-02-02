@@ -5,14 +5,14 @@
     "text": "Expense breakdown",
     "subtitle": "Amount per week ($)"
   },
-  "data": { "url": "https://xitian9.github.io/hledger-vega/data/expensecategories.csv"},
+  "data": { "url": "charts/expensecategories.csv"},
 
   "transform": [
     { "calculate": "split(datum.account, ':', 2)", "as": "accountpair" },
     {
       "window": [{"op": "mean", "field": "value", "as": "rolling_mean"}],
       "groupby": ["accountpair"],
-      "frame": [-31, 0]
+      "frame": [-13, 0]
     },
     { "calculate": "datum.rolling_mean * 7", "as": "weekly" }
   ],
@@ -43,7 +43,7 @@
         "field": "end_date",
         "title": null,
         "type": "temporal",
-        "scale": { "domainMin": { "year": 2013, "month": 10, "date": 12 } }
+        "scale": { "domainMin": { "expr": "timeOffset('year', now(), -1)" } }
       },
       "y": {
         "field": "weekly",

@@ -1,3 +1,3 @@
-{ pkgs ? import <nixpkgs> { }, reportdir ? ".", argsdir ? reportdir, outdir ? reportdir }:
+{ pkgs ? import <nixpkgs> { }, chartsdir ? ".", datasetsdir ? chartsdir }:
 
-pkgs.callPackage ./release.nix { inherit reportdir argsdir outdir; }
+pkgs.callPackage ./release.nix { inherit chartsdir datasetsdir; }

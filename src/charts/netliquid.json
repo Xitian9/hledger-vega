@@ -1,41 +1,16 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "name": "SavingsGoals",
+  "name": "NetLiquid",
   "title": {
-    "text": "Savings goals",
-    "subtitle": "Percentage of revenues put into savings, averaged over the last half year"
+    "text": "Liquid assets",
+    "subtitle": "Liquid assets, net liquid assets, and short-term liabilities (thousand $)"
   },
   "width": "container",
   "height": "container",
-  "data": { "url": "../data/savings.csv"},
+  "data": { "url": "charts/netliquid.csv"},
 
   "transform": [
-    {
-      "window": [{"op": "sum", "field": "value", "as": "rolling_sum"}],
-      "groupby": ["account"],
-      "frame": [-181, 0]
-    },
-    {
-      "window": [{"op": "count", "as": "window_size"}],
-      "groupby": ["account"],
-      "frame": [-181, 0]
-    },
-    { "filter": "datum.window_size >= 90" },
-    { "pivot": "account", "groupby": ["end_date"], "value": "rolling_sum" },
-    {
-      "calculate": "datum.revenuesuper != 0 ? (datum.revenuesuper - datum.expenses) / datum.revenuesuper : 0",
-      "as": "Including superannuation"
-    },
-    {
-      "calculate": "datum.revenue != 0 ? (datum.revenue - datum.expenses) / datum.revenue : 0",
-      "as": "Savings"
-    },
-    {
-      "calculate": "datum.revenue != 0 ? (datum.revenue - datum.repayments) / datum.revenue : 0",
-      "as": "Liquid savings"
-    },
-    {"fold": ["Savings", "Liquid savings", "Including superannuation"], "as": ["account", "value"]},
-    {"calculate": "datum.value * 100", "as": "percentage"}
+    { "calculate": "datum.value / 1000", "as": "thousands" }
   ],
 
   "layer": [
@@ -48,9 +23,10 @@
           "scale": { "domainMin": { "expr": "timeOffset('year', now(), -1)" } }
         },
         "y": {
-          "field": "percentage",
+          "field": "thousands",
           "title": null,
-          "type": "quantitative"
+          "type": "quantitative",
+          "aggregate": "sum"
         },
         "color": {
           "field": "account",
@@ -81,9 +57,9 @@
           }
         },{
           "encoding": {
-            "text": {"type": "quantitative", "field": "value", "aggregate": "sum", "format": "0.1%"},
+            "text": {"type": "quantitative", "field": "value", "aggregate": "sum", "format": "$0.3s"},
             "x": {"type": "temporal", "field": "end_date"},
-            "y": {"type": "quantitative", "field": "percentage", "aggregate": "sum"},
+            "y": {"type": "quantitative", "field": "thousands", "aggregate": "sum"},
             "color": {"type": "nominal", "field": "account"}
           },
           "layer": [

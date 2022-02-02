@@ -5,9 +5,8 @@ umask 077
 dir="$(mktemp -d "${TMPDIR:-/tmp}/hledger-vega.XXXXXXXXXX")"
 trap "rm -r $dir" EXIT
 
-argsdir=./args
-reportdir=./reports
-outdir=./data
+datasetdir=./datasets
+chartsdir=./charts
 
 # initialize a semaphore with a given number of tokens
 open_sem(){
@@ -33,7 +32,7 @@ run_with_lock(){
 }
 
 # Create the data directory if it doesn't exist
-mkdir -p "$outdir"
+mkdir -p "$chartsdir"
 
 # Use 4 jobs
 N=4
@@ -66,16 +65,16 @@ make_report() {
         } | sed -e "s/^\"...\"/\"$label\"/"
         first=0
     done < "$1" \
-         > "$outdir/$name.csv"
+         > "$chartsdir/$name.csv"
 }
 
-for query in "$argsdir"/*.args; do
+for query in "$datasetdir"/*.args; do
     run_with_lock hledger_with_name "$query"
 done
 
 wait
 
-for report in "$reportdir"/*.report; do
+for report in "$chartsdir"/*.report; do
     run_with_lock make_report "$report"
 done
 

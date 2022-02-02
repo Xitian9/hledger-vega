@@ -1,13 +1,13 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "name": "NetLiquid",
+  "name": "NetPosition",
   "title": {
-    "text": "Liquid assets",
-    "subtitle": "Liquid assets, net liquid assets, and short-term liabilities (thousand $)"
+    "text": "Net position",
+    "subtitle": "Net position (thousand $)"
   },
   "width": "container",
   "height": "container",
-  "data": { "url": "../data/netliquid.csv"},
+  "data": { "url": "charts/netposition.csv"},
 
   "transform": [
     { "calculate": "datum.value / 1000", "as": "thousands" }
@@ -26,7 +26,8 @@
           "field": "thousands",
           "title": null,
           "type": "quantitative",
-          "aggregate": "sum"
+          "aggregate": "sum",
+          "scale": { "zero": false }
         },
         "color": {
           "field": "account",

@@ -1,27 +1,41 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "name": "IncomeStatement",
+  "name": "SavingsGoals",
   "title": {
-    "text": "Income statement",
-    "subtitle": "Weekly revenues and expenses, rolling average over a 28-day window ($)"
+    "text": "Savings goals",
+    "subtitle": "Percentage of revenues put into savings, averaged over the last half year"
   },
   "width": "container",
   "height": "container",
-  "data": { "url": "https://xitian9.github.io/hledger-vega/data/incomestatement.csv"},
+  "data": { "url": "charts/savings.csv"},
 
   "transform": [
     {
-      "window": [{"op": "mean", "field": "value", "as": "rolling_mean"}],
+      "window": [{"op": "sum", "field": "value", "as": "rolling_sum"}],
       "groupby": ["account"],
-      "frame": [-27, 0]
+      "frame": [-181, 0]
     },
     {
       "window": [{"op": "count", "as": "window_size"}],
       "groupby": ["account"],
-      "frame": [-27, 0]
+      "frame": [-181, 0]
     },
-    { "filter": "datum.window_size >= 14" },
-    { "calculate": "datum.rolling_mean * 7", "as": "weekly" }
+    { "filter": "datum.window_size >= 90" },
+    { "pivot": "account", "groupby": ["end_date"], "value": "rolling_sum" },
+    {
+      "calculate": "datum.revenuesuper != 0 ? (datum.revenuesuper - datum.expenses) / datum.revenuesuper : 0",
+      "as": "Including superannuation"
+    },
+    {
+      "calculate": "datum.revenue != 0 ? (datum.revenue - datum.expenses) / datum.revenue : 0",
+      "as": "Savings"
+    },
+    {
+      "calculate": "datum.revenue != 0 ? (datum.revenue - datum.repayments) / datum.revenue : 0",
+      "as": "Liquid savings"
+    },
+    {"fold": ["Savings", "Liquid savings", "Including superannuation"], "as": ["account", "value"]},
+    {"calculate": "datum.value * 100", "as": "percentage"}
   ],
 
   "layer": [
@@ -31,13 +45,12 @@
           "field": "end_date",
           "title": null,
           "type": "temporal",
-          "scale": { "domainMin": { "year": 2013, "month": 10, "date": 12 } }
+          "scale": { "domainMin": { "expr": "timeOffset('year', now(), -1)" } }
         },
         "y": {
-          "field": "weekly",
+          "field": "percentage",
           "title": null,
-          "type": "quantitative",
-          "aggregate": "sum"
+          "type": "quantitative"
         },
         "color": {
           "field": "account",
@@ -68,9 +81,9 @@
           }
         },{
           "encoding": {
-            "text": {"type": "quantitative", "field": "weekly", "aggregate": "sum", "format": "$0.3s"},
+            "text": {"type": "quantitative", "field": "value", "aggregate": "sum", "format": "0.1%"},
             "x": {"type": "temporal", "field": "end_date"},
-            "y": {"type": "quantitative", "field": "weekly", "aggregate": "sum"},
+            "y": {"type": "quantitative", "field": "percentage", "aggregate": "sum"},
             "color": {"type": "nominal", "field": "account"}
           },
           "layer": [

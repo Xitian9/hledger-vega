@@ -1,16 +1,22 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "name": "NetPosition",
+  "name": "IncomeStatement",
   "title": {
-    "text": "Net position",
-    "subtitle": "Net position (thousand $)"
+    "text": "Income statement",
+    "subtitle": "Weekly revenues and expenses, rolling average over a two-week window ($)"
   },
   "width": "container",
   "height": "container",
-  "data": { "url": "../data/netposition.csv"},
+  "data": { "url": "charts/incomestatement.csv"},
 
   "transform": [
-    { "calculate": "datum.value / 1000", "as": "thousands" }
+    {
+      "window": [{"op": "mean", "field": "value", "as": "rolling_mean"}],
+      "groupby": ["account"],
+      "frame": [-13, 0]
+    },
+    { "calculate": "datum.rolling_mean * 7", "as": "weekly" },
+    { "calculate": "datum.weekly / 1000", "as": "thousands" }
   ],
 
   "layer": [
@@ -26,8 +32,7 @@
           "field": "thousands",
           "title": null,
           "type": "quantitative",
-          "aggregate": "sum",
-          "scale": { "zero": false }
+          "aggregate": "sum"
         },
         "color": {
           "field": "account",
@@ -58,7 +63,7 @@
           }
         },{
           "encoding": {
-            "text": {"type": "quantitative", "field": "value", "aggregate": "sum", "format": "$0.3s"},
+            "text": {"type": "quantitative", "field": "weekly", "aggregate": "sum", "format": "$0.3s"},
             "x": {"type": "temporal", "field": "end_date"},
             "y": {"type": "quantitative", "field": "thousands", "aggregate": "sum"},
             "color": {"type": "nominal", "field": "account"}
