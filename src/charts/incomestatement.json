@@ -15,6 +15,12 @@
       "groupby": ["account"],
       "frame": [-13, 0]
     },
+    {
+      "window": [{"op": "count", "as": "window_size"}],
+      "groupby": ["account"],
+      "frame": [-27, 0]
+    },
+    { "filter": "datum.window_size >= 14" },
     { "calculate": "datum.rolling_mean * 7", "as": "weekly" },
     { "calculate": "datum.weekly / 1000", "as": "thousands" }
   ],
